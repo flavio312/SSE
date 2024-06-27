@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>EventSource Client</title>
+</head>
+<body>
+    <div class="sales">
+        <img src="./img/store.png" alt=""> 
+        <h1><a href="./index.html">Abarrotes la central</a></h1><br>
+    </div>
+    <div class="body"><br>
+        <div class="container">
+            <div class="section">
+                <h1 class="title"><img src="./img/icono.png" alt="product"><a href="./pages/addProduct.html" class="add-link"> <br>Nuevo producto</a></h1>
+                <div id="productos" class="list"></div>
+            </div>
+            <div class="section">
+                <h1 class="title"><img src="./img/partners.png" alt="partners"><a href="./pages/addPartners.html" class="add-link"> <br>Nuevo socio</a></h1>
+                <div id="socios" class="list"></div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        const eventSource = new EventSource('http://localhost:3000/eventos');
+
+        eventSource.addEventListener('productos', (event) => {
+            const productosDiv = document.getElementById('productos');
+            const producto = document.createElement('div');
+            const { nombre, cantidad, precio } = JSON.parse(event.data);
+            producto.className = 'item';
+            producto.innerHTML = `
+                <p><strong>Nombre:</strong> ${nombre}</p>
+                <p><strong>Cantidad:</strong> ${cantidad}</p>
+                <p><strong>Precio:</strong> ${precio}</p>
+                <hr>
+            `;
+            productosDiv.appendChild(producto);
+        });
+
+        eventSource.addEventListener('partners', (event) => {
+            const sociosDiv = document.getElementById('socios');
+            const socio = document.createElement('div');
+            const { nombre, company, type } = JSON.parse(event.data);
+            socio.className = 'item';
+            socio.innerHTML = `
+                <p><strong>Nombre:</strong> ${nombre}</p>
+                <p><strong>Compañía:</strong> ${company}</p>
+                <p><strong>Tipo:</strong> ${type}</p>
+                <hr>
+            `;
+            sociosDiv.appendChild(socio);
+        });
+
+        eventSource.onerror = (err) => {
+            console.error('EventSource failed:', err);
+        };
+
+    </script>
+</body>
+</html>
