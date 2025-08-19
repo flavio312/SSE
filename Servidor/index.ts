@@ -3,9 +3,12 @@ import cors from "cors";
 import router from "./src/routes/routes";
 import sequelize from "./src/config/database.config";
 import { WebSocketServer } from "ws";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || '';
 
 app.use(express.json());
 app.use(cors());
